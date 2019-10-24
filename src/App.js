@@ -5,77 +5,62 @@ import 'react-activity/dist/react-activity.css';
 import {ApolloProvider, useLazyQuery} from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 import gql from 'graphql-tag';
-// import {createBrowserApp} from "@react-navigation/web";
-// import {createSwitchNavigator} from '@react-navigation/core';
-// import {useNavigation} from "react-navigation-hooks";
-
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Card from 'react-bootstrap/Card';
+import Collapse from "react-bootstrap/Collapse";
+import Button from "react-bootstrap/Button";
 const client = new ApolloClient({
   uri: 'http://127.0.0.1:4000'
 });
 
-// const movieQuery = gql`
-//   query{
-//     movies{
-//       title
-//       year
-//       company
-//       rating
-//     }
-//   }
-// `;
-
-const rawQuery = gql`
-  query($query:String){
-    rawQuery(query:$query){
-      response
+const movieQuery = gql`
+  query{
+    movies{
+      title
+      year
+      company
+      rating
     }
   }
 `;
 
-
-const ResponseRow = ({response}) => {
-  let keys = Object.keys(response);
+const MovieCard = ({movie}) =>{
+  const [collapsed, setCollapsed] = useState(true);
   return (
-    <tr key={response.toString()}>
-      {keys.map((key) => <td key={key.toString() + response.toString()}>{response[key]}</td>)}
-    </tr>
+    <Card>
+      <Card.Body>
+        <Card.Title>{movie.title}</Card.Title>
+
+      </Card.Body>
+      <Button onClick={()=>setCollapsed(!collapsed)}/>
+      <Collapse in={!collapsed}>
+        <Card.Text>
+          <div>
+            <p>{movie.year}</p>
+            <p>{movie.company}</p>
+            <p>{movie.rating}</p>
+          </div>
+        </Card.Text>
+      </Collapse>
+    </Card>
   );
 };
 
-const ResponseTable = ({responses}) => {
-  let newList = responses.map((response) => JSON.parse(response.response));
-  let keys;
-  if (newList.length > 0) keys = Object.keys(newList[0]);
-  else keys = [];
+const MovieList = ({movies}) =>{
   return (
-    <table>
-      <tbody>
-      <tr>
-        <th key='title'>Response</th>
-      </tr>
-      <tr key='fields'>
-        {keys.map((key, index) => <td key={'fields' + index}>{key}</td>)}
-      </tr>
-      {newList.map((response, index) => (
-        <ResponseRow key={'row' + index} response={response}/>
-      ))}
-      </tbody>
-    </table>
+    <div className="movieList">
+      {movies.map((movie)=><MovieCard movie={movie}/>)}
+    </div>
   );
 };
 
 function App() {
-  // const {navigate} = useNavigation();
-  const [execute, {loading, data}] = useLazyQuery(rawQuery);
+  const [execute, {loading, data}] = useLazyQuery(movieQuery);
   const [textState, setTextState] = useState('');
   const [isLoading, setLoading] = useState(false);
-  // if (!loading) alert(JSON.parse(data.rawQuery[0].response));
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    execute({variables: {query: textState}})
-  };
+
+  useEffect(()=>execute(),[]);
 
   const onChange = (event) => {
     setTextState(event.target.value)
@@ -89,13 +74,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <form onSubmit={onSubmit}>
-          <textarea value={textState} onChange={onChange}/><br/>
-          <input type="submit" value="Submit"/>
-          <button onClick={()=>{setTextState(''); execute({variables: {query: textState}})}}>Clear</button>
-        </form>
-        <ResponseTable responses={data && data.rawQuery ? data.rawQuery : []}/>
-        {isLoading ? <Spinner/> : null}
+        {data && data.movies ? <MovieList movies={data.movies}/>:null}
+        {isLoading?<Spinner/>:null}
       </header>
     </div>
   );
@@ -108,13 +88,5 @@ function WrappedApp() {
     </ApolloProvider>
   );
 }
-
-// function Second() {
-//   return (
-//     <div>
-//       <p>test</p>
-//     </div>
-//   );
-// }
 
 export default WrappedApp;

@@ -1,0 +1,23 @@
+div.card{
+    border-color: grey;
+    border-width: 2px;
+    border-style: solid;
+    width: fit-content;
+    box-shadow: grey 2px 2px;
+    padding: 5px;
+    padding-left:15px;
+    padding-right:15px;
+    flex:1 0 25%;
+    margin:5px;
+}
+
+div.movieList{
+    display:flex;
+    flex-flow:row wrap;
+}
+
+
+.card_button{
+    display: block;
+    right:5px;
+}
