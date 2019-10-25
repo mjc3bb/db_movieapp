@@ -1,0 +1,9 @@
+import React from 'react';
+import {Link} from "react-router-dom";
+
+const MovieLink = ({children:Children, id}) =>{
+  alert(Children);
+  return <Link to={`/movie/${id}`}><Children/></Link>
+};
+
+export default MovieLink;
