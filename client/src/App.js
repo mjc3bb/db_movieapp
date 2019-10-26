@@ -1,46 +1,86 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {Spinner} from 'react-activity';
 import 'react-activity/dist/react-activity.css';
-import {ApolloProvider} from '@apollo/react-hooks';
+import {ApolloProvider, useLazyQuery} from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
-import MovieListScreen from "./screens/MovieListScreen";
-import MovieDetailScreen from "./screens/MovieDetailScreen";
-import HomeScreen from "./screens/HomeScreen";
-import ActorListScreen from "./screens/ActorListScreen";
-import ActorDetailScreen from "./screens/ActorDetailScreen"
+import gql from 'graphql-tag';
 
 const client = new ApolloClient({
   uri: 'http://127.0.0.1:4000'
 });
 
+const rawQuery = gql`
+  query($query:String){
+    rawQuery(query:$query){
+      response
+    }
+  }
+`;
+
+
+const ResponseRow = ({response}) => {
+  let keys = Object.keys(response);
+  return (
+    <tr key={response.toString()}>
+      {keys.map((key) => <td key={key.toString() + response.toString()}>{response[key]}</td>)}
+    </tr>
+  );
+};
+
+const ResponseTable = ({responses}) => {
+  let newList = responses.map((response) => JSON.parse(response.response));
+  let keys;
+  if (newList.length > 0) keys = Object.keys(newList[0]);
+  else keys = [];
+  return (
+    <table>
+      <tbody>
+      <tr>
+        <th key='title'>Response</th>
+      </tr>
+      <tr key='fields'>
+        {keys.map((key, index) => <td key={'fields' + index}>{key}</td>)}
+      </tr>
+      {newList.map((response, index) => (
+        <ResponseRow key={'row' + index} response={response}/>
+      ))}
+      </tbody>
+    </table>
+  );
+};
+
 function App() {
+  // const {navigate} = useNavigation();
+  const [execute, {loading, data}] = useLazyQuery(rawQuery);
+  const [textState, setTextState] = useState('');
+  const [isLoading, setLoading] = useState(false);
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    execute({variables: {query: textState}})
+  };
+
+  const onChange = (event) => {
+    setTextState(event.target.value)
+  };
+
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading]);
+
+
   return (
     <div className="App">
-      <Router>
-          <Switch>
-            <Route path='/movies'>
-              <MovieListScreen/>
-            </Route>
-            <Route path='/movie/:id'>
-              <MovieDetailScreen/>
-            </Route>
-            <Route path='/actors'>
-              <ActorListScreen/>
-            </Route>
-            <Route path='/actor/:id'>
-              <ActorDetailScreen/>
-            </Route>
-            <Route path='/'>
-              <HomeScreen/>
-            </Route>
-          </Switch>
-      </Router>
+      <header className="App-header">
+        <form onSubmit={onSubmit}>
+          <textarea value={textState} onChange={onChange}/><br/>
+          <input type="submit" value="Submit"/>
+          <button onClick={()=>{setTextState(''); execute({variables: {query: textState}})}}>Clear</button>
+        </form>
+        <ResponseTable responses={data && data.rawQuery ? data.rawQuery : []}/>
+        {isLoading ? <Spinner/> : null}
+      </header>
     </div>
   );
 }
