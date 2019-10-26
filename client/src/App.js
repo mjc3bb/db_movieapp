@@ -9,11 +9,8 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import MovieListScreen from "./screens/MovieListScreen";
-import MovieDetailScreen from "./screens/MovieDetailScreen";
-import HomeScreen from "./screens/HomeScreen";
-import ActorListScreen from "./screens/ActorListScreen";
-import ActorDetailScreen from "./screens/ActorDetailScreen"
+
+import {MovieDetailScreen, MovieListScreen, HomeScreen, ActorDetailScreen, ActorListScreen} from './screens'
 
 const client = new ApolloClient({
   uri: 'http://127.0.0.1:4000'
@@ -23,23 +20,23 @@ function App() {
   return (
     <div className="App">
       <Router>
-          <Switch>
-            <Route path='/movies'>
-              <MovieListScreen/>
-            </Route>
-            <Route path='/movie/:id'>
-              <MovieDetailScreen/>
-            </Route>
-            <Route path='/actors'>
-              <ActorListScreen/>
-            </Route>
-            <Route path='/actor/:id'>
-              <ActorDetailScreen/>
-            </Route>
-            <Route path='/'>
-              <HomeScreen/>
-            </Route>
-          </Switch>
+        <Switch>
+          <Route path='/movies'>
+            <MovieListScreen/>
+          </Route>
+          <Route path='/movie/:id'>
+            <MovieDetailScreen/>
+          </Route>
+          <Route path='/actors'>
+            <ActorListScreen/>
+          </Route>
+          <Route path='/actor/:id'>
+            <ActorDetailScreen/>
+          </Route>
+          <Route path='/'>
+            <HomeScreen/>
+          </Route>
+        </Switch>
       </Router>
     </div>
   );

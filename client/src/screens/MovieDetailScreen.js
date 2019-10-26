@@ -1,4 +1,4 @@
-import {useQuery} from "@apollo/react-hooks";
+import {useQuery, QueryOptions} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {Link, useParams} from "react-router-dom";
 import React from "react";

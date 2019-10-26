@@ -1,0 +1,26 @@
+query movie($id:ID){
+    movie(id:$id){
+        title
+        year
+        rating
+        genres{
+            name
+        }
+        actors{
+            id
+            first
+            last
+        }
+        directors{
+            first
+            last
+        }
+        company
+        reviews{
+            name
+            time
+            rating
+            comment
+        }
+    }
+}

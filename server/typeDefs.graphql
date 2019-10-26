@@ -1,0 +1,59 @@
+type Raw {
+  response: String
+}
+
+type Review {
+  name: String
+  time: String
+  mid: ID
+  rating: Int
+  comment: String
+}
+
+type Movie{
+  id: ID
+  title: String
+  year: Int
+  rating: String
+  company: String
+  reviews: [Review]
+  actors: [Actor]
+  directors: [Director]
+  genres: [Genre]
+}
+
+type Genre {
+  name: String
+  movies: [Movie]
+}
+
+type Actor {
+  id: ID
+  first: String
+  last: String
+  dob: String
+  dod: String
+  movies: [Movie]
+}
+
+type Director {
+  id: ID
+  first: String
+  last: String
+  dob: String
+  dod: String
+  movies: [Movie]
+}
+
+type Query {
+  rawQuery(query:String): [Raw]
+  movies(offset:Int, limit:Int): [Movie]
+  movie(id:ID): Movie
+  actors(offset:Int, limit:Int): [Actor]
+  actor(id:ID): Actor
+  genres: [Genre]
+}
+
+type Mutation {
+  postReview(name: String, mid: ID, rating: Int, comment:String):Review
+}
