@@ -2,7 +2,7 @@ const {ApolloServer, gql} = require('apollo-server');
 
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('moviedb', 'root', 'password', {
+const sequelize = new Sequelize('moviedb', 'cs3423', '', {
   host: "localhost",
   port: 3306,
   dialect: 'mysql',
