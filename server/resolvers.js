@@ -109,13 +109,13 @@ const queryResolvers = {
   actors: (parent, {offset, limit}) => {
     return new Promise((resolve) => {
       let query = `select * from actor`;
-      if (offset!==undefined && limit !==undefined) query += ` limit ${offset},${limit}`;
+      if (offset !== undefined && limit !== undefined) query += ` limit ${offset},${limit}`;
       sequelize.query(query).then((results) => {
         resolve(results[0])
       })
     })
   },
-  genre: (parent, {name})=>{
+  genre: (parent, {name}) => {
     return new Promise((resolve) => {
       sequelize.query(`select distinct genre as name from moviegenre where genre like "${name}"`).then((results) => {
         resolve(results[0][0])
