@@ -96,7 +96,7 @@ const queryResolvers = {
   },
   movies: (parent, {offset, limit}) => {
     let query = `select * from movie`;
-    if (offset && limit) query += ` limit ${offset},${limit}`;
+    if (offset !== undefined && limit !== undefined) query += ` limit ${offset},${limit}`;
     return new Promise((resolve) => {
       sequelize.query(query).then((results) => {
         resolve(results[0])
@@ -117,7 +117,7 @@ const queryResolvers = {
   actors: (parent, {offset, limit}) => {
     return new Promise((resolve) => {
       let query = `select * from actor`;
-      if (offset && limit) query += ` limit ${offset},${limit}`;
+      if (offset!==undefined && limit !==undefined) query += ` limit ${offset},${limit}`;
       sequelize.query(query).then((results) => {
         resolve(results[0])
       })
