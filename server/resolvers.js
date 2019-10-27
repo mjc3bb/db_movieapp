@@ -49,12 +49,8 @@ const movieResolvers = {
   },
   genres: ({id: mid}) => {
     return new Promise((resolve) => {
-      sequelize.query(`select * from moviegenre where mid=${mid}`).then((results) => {
-        resolve(results[0].map(item => {
-          return {
-            name: item['genre']
-          }
-        }))
+      sequelize.query(`select genre as name from moviegenre where mid=${mid}`).then((results) => {
+        resolve(results[0])
       })
     })
   },
@@ -105,12 +101,8 @@ const queryResolvers = {
   },
   genres: (parent, args) => {
     return new Promise((resolve) => {
-      sequelize.query(`select distinct genre from moviegenre;`).then((results) => {
-        resolve(results[0].map(item => {
-          return {
-            name: item['genre']
-          }
-        }))
+      sequelize.query(`select distinct genre as name from moviegenre;`).then((results) => {
+        resolve(results[0])
       })
     })
   },
@@ -120,6 +112,13 @@ const queryResolvers = {
       if (offset!==undefined && limit !==undefined) query += ` limit ${offset},${limit}`;
       sequelize.query(query).then((results) => {
         resolve(results[0])
+      })
+    })
+  },
+  genre: (parent, {name})=>{
+    return new Promise((resolve) => {
+      sequelize.query(`select distinct genre as name from moviegenre where genre like "${name}"`).then((results) => {
+        resolve(results[0][0])
       })
     })
   },

@@ -52,6 +52,7 @@ type Query {
   actors(offset:Int, limit:Int): [Actor]
   actor(id:ID): Actor
   genres: [Genre]
+  genre(name:String): Genre
 }
 
 type Mutation {
