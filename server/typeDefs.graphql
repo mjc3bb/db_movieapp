@@ -57,4 +57,5 @@ type Query {
 
 type Mutation {
   postReview(name: String, mid: ID, rating: Int, comment:String):Review
+  generateRandomReviews: [Review]
 }

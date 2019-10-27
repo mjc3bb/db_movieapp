@@ -5,6 +5,8 @@ const sequelize = new Sequelize('moviedb', 'cs3423', '', {
   dialect: 'mysql',
 });
 
+const casual = require('casual');
+
 const actorResolvers = {
   movies: ({id: aid}) => {
     return new Promise((resolve) => {
@@ -64,6 +66,25 @@ const mutationResolvers = {
       })
     })
   },
+  generateRandomReviews: () => {
+    return new Promise((resolve, reject) => {
+      // SELECT id FROM movie ORDER BY RAND() LIMIT 100
+      let reviews = [];
+      sequelize.query(`SELECT id FROM movie ORDER BY RAND() LIMIT 100`).then((results) => {
+        results[0].forEach((result) => {
+          let r = {
+            name: casual.full_name,
+            time: casual.date(format = 'YYYY-MM-DD'),
+            mid: result.id,
+            rating: casual.integer(from = 0, to = 10),
+            comment: casual.sentences(n = 3)
+          };
+          reviews.push(r);
+          sequelize.query(`insert into review value("${r.name}", "${r.time}", ${r.mid},${r.rating}, "${r.comment}")`);
+        });
+      }).then(() => resolve(reviews));
+    })
+  }
 };
 
 const queryResolvers = {
@@ -121,7 +142,7 @@ const queryResolvers = {
         resolve(results[0][0])
       })
     })
-  },
+  }
 };
 
 const resolvers = {
