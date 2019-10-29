@@ -1,0 +1,9 @@
+mutation post($name:String, $mid:ID, $rating:Int, $comment:String){
+  postReview(name:$name,mid:$mid, rating:$rating,comment:$comment){
+    name
+    time
+    mid
+    rating
+    comment
+  }
+}

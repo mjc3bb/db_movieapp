@@ -28,7 +28,7 @@ const MovieListScreen = () =>{
     if (data && data.movies)
       setMovieList(data.movies.map((movie)=>
         <div>
-          <Link to={`/movie/${movie.id}`}>
+          <Link to={`/movies/${movie.id}`}>
             {movie.title}: <i>{movie.year}</i> ({movie.rating})
           </Link>
           <hr/>

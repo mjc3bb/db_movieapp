@@ -26,7 +26,7 @@ const ActorListScreen = () =>{
     if (data && data.actors)
       setActorList(data.actors.map((actor)=>
         <div>
-          <Link to={`/actor/${actor.id}`}>
+          <Link to={`/actors/${actor.id}`}>
             {actor.first} {actor.last}
           </Link>
           <hr/>

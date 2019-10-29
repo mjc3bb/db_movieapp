@@ -32,7 +32,8 @@ const ActorDetailScreen = () =>{
     <div>
       <h5>Movies</h5>
       <ul>
-        {data.actor.movies.map((movie)=><li><Link to={`/movie/${movie.id}`}>{movie.title}</Link></li>)}
+        {data.actor.movies.map((movie)=><li><Link to={`/movies/${movie.id}`}>{movie.title}</Link></li>)}
+        {data.actor.movies.length===0 ? <div>No Movies!</div>:null}
       </ul>
     </div>
   );

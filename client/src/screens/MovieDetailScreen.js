@@ -1,7 +1,9 @@
 import {useQuery, QueryOptions} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {Link, useParams} from "react-router-dom";
-import React from "react";
+import React, {useReducer, useState} from "react";
+import NewReviewComponent from "../components/NewReviewComponent";
+import ReviewItem from '../components/ReviewItem';
 
 const MovieDetailScreen = () =>{
   const {id} = useParams('id');
@@ -38,6 +40,7 @@ const MovieDetailScreen = () =>{
 
   if (!(data && data.movie)) return null;
 
+
   const TitleSection = () =>(
     <div>
       {data.movie.title}:  <i>{data.movie.year}</i> - {data.movie.company}  ({data.movie.rating})
@@ -66,7 +69,7 @@ const MovieDetailScreen = () =>{
     <div className="column">
       <h5>Actors</h5>
       <ul>
-        {data.movie.actors.map((actor)=><li><Link to={`/actor/${actor.id}`}>{actor.first} {actor.last}</Link></li>)}
+        {data.movie.actors.map((actor)=><li><Link to={`/actors/${actor.id}`}>{actor.first} {actor.last}</Link></li>)}
       </ul>
     </div>
   );
@@ -74,10 +77,11 @@ const MovieDetailScreen = () =>{
   const ReviewsSection = () => (
     <span>
       <div>Reviews</div>
-      <ul>
-        {data.movie.reviews.map((review)=><li>{review.name}</li>)}
+      <NewReviewComponent mid={id}/>
+      <div>
+        {data.movie.reviews.map((review)=><ReviewItem review={review}/>)}
         {data.movie.reviews.length===0 ? <div>No reviews yet!</div>:null}
-      </ul>
+      </div>
     </span>
   );
 

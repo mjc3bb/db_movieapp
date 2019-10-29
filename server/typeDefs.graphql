@@ -45,6 +45,8 @@ type Director {
   movies: [Movie]
 }
 
+union Search = Movie|Actor|Director
+
 type Query {
   rawQuery(query:String): [Raw]
   movies(offset:Int, limit:Int): [Movie]
@@ -53,6 +55,7 @@ type Query {
   actor(id:ID): Actor
   genres: [Genre]
   genre(name:String): Genre
+  search(search:String): [Search]
 }
 
 type Mutation {

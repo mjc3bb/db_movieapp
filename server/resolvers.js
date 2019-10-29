@@ -30,7 +30,7 @@ const genreResolvers = {
 const movieResolvers = {
   reviews: ({id: mid}, args) => {
     return new Promise((resolve) => {
-      sequelize.query(`select * from review where mid=${mid}`).then((results) => {
+      sequelize.query(`select * from review where mid=${mid} order by time desc`).then((results) => {
         resolve(results[0])
       })
     })
@@ -61,8 +61,14 @@ const movieResolvers = {
 const mutationResolvers = {
   postReview: (parent, {name, mid, rating, comment}) => {
     return new Promise((resolve) => {
+      const r = {
+        name:name,
+        rating:rating,
+        comment:comment,
+        mid:mid
+      };
       sequelize.query(`insert into review value ("${name}", now(), ${mid}, ${rating}, "${comment}")`).then((results) => {
-        resolve(results[0])
+        resolve(r)
       })
     })
   },
@@ -70,13 +76,13 @@ const mutationResolvers = {
     return new Promise((resolve, reject) => {
       // SELECT id FROM movie ORDER BY RAND() LIMIT 100
       let reviews = [];
-      sequelize.query(`SELECT id FROM movie ORDER BY RAND() LIMIT 100`).then((results) => {
+      sequelize.query(`SELECT id FROM movie ORDER BY RAND() LIMIT 4000`).then((results) => {
         results[0].forEach((result) => {
           let r = {
             name: casual.full_name,
             time: casual.date(format = 'YYYY-MM-DD'),
             mid: result.id,
-            rating: casual.integer(from = 0, to = 10),
+            rating: casual.integer(from = 0, to = 5),
             comment: casual.sentences(n = 3)
           };
           reviews.push(r);
@@ -141,6 +147,20 @@ const queryResolvers = {
       sequelize.query(`select distinct genre as name from moviegenre where genre like "${name}"`).then((results) => {
         resolve(results[0][0])
       })
+    })
+  },
+  search:(parent, {search})=>{
+    return new Promise((resolve) => {
+      let allResults = [];
+      sequelize.query(`select *, "Movie" as __typename from movie m where title like binary "%${search}%" or year like binary "%${search}%" or rating like binary "%${search}%" or company like binary "%${search}%";`).then((results) => {
+        allResults.push(...results[0])
+      }).then(()=>{
+        sequelize.query(`select *, "Actor" as __typename from actor a where concat(first,' ',last) like "%${search}%" or dob like "%${search}%" or dod like "%${search}%";`).then((results)=>{
+          allResults.push(...results[0]);
+        }).then(()=>{
+          resolve(allResults);
+        });
+      });
     })
   }
 };

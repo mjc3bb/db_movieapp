@@ -21,17 +21,17 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
+          <Route path='/movies/:id'>
+            <MovieDetailScreen/>
+          </Route>
           <Route path='/movies'>
             <MovieListScreen/>
           </Route>
-          <Route path='/movie/:id'>
-            <MovieDetailScreen/>
+          <Route path='/actors/:id'>
+            <ActorDetailScreen/>
           </Route>
           <Route path='/actors'>
             <ActorListScreen/>
-          </Route>
-          <Route path='/actor/:id'>
-            <ActorDetailScreen/>
           </Route>
           <Route path='/'>
             <HomeScreen/>
